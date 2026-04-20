@@ -6,13 +6,13 @@ from models import User, Auction
 from datetime import datetime, timedelta
 from models import User, Auction, Bid
 from datetime import datetime, timedelta
-import secrets
+
 
 
 
 app = Flask(__name__)
 app.config.from_object(Config)
-app.config["SECRET_KEY"] = secrets.token_hex(16)
+
 
 
 db.init_app(app)
