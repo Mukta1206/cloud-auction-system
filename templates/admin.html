@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<section class="hero">
+<h1>Admin Control Center</h1>
+<p>Full system monitoring and analytics.</p>
+</section>
+
+<div class="stats-grid">
+
+<div class="stat-card">
+<h3>Total Users</h3>
+<p>{{ total_users }}</p>
+</div>
+
+<div class="stat-card">
+<h3>Total Auctions</h3>
+<p>{{ total_auctions }}</p>
+</div>
+
+<div class="stat-card">
+<h3>Total Bids</h3>
+<p>{{ total_bids }}</p>
+</div>
+
+<div class="stat-card">
+<h3>Active Auctions</h3>
+<p>{{ active_auctions }}</p>
+</div>
+
+<div class="stat-card">
+<h3>Closed Auctions</h3>
+<p>{{ closed_auctions }}</p>
+</div>
+
+</div>
+
+<section class="auction-section">
+
+<h2>Users</h2>
+
+{% for user in users %}
+<div class="auction-card">
+
+{{ user.username }}
+
+{% if user.is_admin %}
+(Admin)
+{% endif %}
+
+{% if not user.is_admin %}
+<br><br>
+<a href="/admin/delete-user/{{ user.id }}" class="view-btn">
+Delete User
+</a>
+{% endif %}
+
+</div>
+{% endfor %}
+
+</section>
+
+<section class="auction-section">
+
+<h2>Auctions</h2>
+
+{% for auction in auctions %}
+<div class="auction-card">
+
+<h3>{{ auction.title }}</h3>
+
+<p>Seller ID: {{ auction.seller_id }}</p>
+
+<p>Price: ${{ "%.2f"|format(auction.current_price) }}</p>
+
+<p>
+{% if auction.is_active %}
+Live
+{% else %}
+Closed
+{% endif %}
+</p>
+
+{% if auction.winner %}
+<p>Winner: {{ auction.winner.username }}</p>
+{% endif %}
+
+</div>
+{% endfor %}
+
+</section>
+
+<section class="auction-section">
+
+<h2>Recent Bids</h2>
+
+{% for bid in bids %}
+<div class="auction-card">
+
+${{ "%.2f"|format(bid.amount) }}
+by {{ bid.bidder.username }}
+on {{ bid.auction.title }}
+
+<br><br>
+
+{% if bid.auction.is_active %}
+<a href="/admin/delete-bid/{{ bid.id }}" class="view-btn">
+Delete Bid
+</a>
+{% else %}
+<span>Closed Auction Record</span>
+{% endif %}
+
+</div>
+{% endfor %}
+
+</section>
+
+{% endblock %}

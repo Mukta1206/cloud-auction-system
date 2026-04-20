@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CloudAuction</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<nav class="navbar">
+    <div class="logo">CloudAuction</div>
+
+    <div class="nav-links">
+        
+
+        {% if current_user.is_authenticated %}
+            <a href="/">Home</a>
+            <a href="/dashboard">Dashboard</a>
+            <a href="/create-auction">Create Auction</a>
+            <a href="/delete-account">Delete Account</a>
+            <span class="welcome-user">Welcome, {{ current_user.username }}</span>
+            {% if current_user.is_authenticated and current_user.is_admin %}
+            <a href="/admin">Admin</a>
+            {% endif %}
+            <a href="/logout">Logout</a>
+        {% else %}
+            <a href="/">Home</a>
+            <a href="/login">Login</a>
+            <a href="/register">Register</a>
+        {% endif %}
+    </div>
+</nav>
+
+<div class="container">
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+    {% for msg in messages %}
+        <div class="flash">{{ msg }}</div>
+    {% endfor %}
+{% endif %}
+{% endwith %}
+
+{% block content %}{% endblock %}
+
+</div>
+
+</body>
+</html>

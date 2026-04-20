@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<section class="hero">
+    <h1>Welcome Back, {{ current_user.username }}</h1>
+    <p>Track your auctions, wins, and activity.</p>
+</section>
+
+{% if notifications %}
+<section class="auction-section">
+<h2>Notifications</h2>
+
+{% for note in notifications %}
+<div class="flash">
+    {{ note }}
+</div>
+{% endfor %}
+
+</section>
+{% endif %}
+
+<p>Track your auctions, wins, and activity.</p>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <h3>Total Created</h3>
+        <p>{{ total_created }}</p>
+    </div>
+
+    <div class="stat-card">
+        <h3>Total Won</h3>
+        <p>{{ total_won }}</p>
+    </div>
+
+    <div class="stat-card">
+        <h3>Active Auctions</h3>
+        <p>{{ total_active }}</p>
+    </div>
+
+    <div class="stat-card">
+        <h3>Closed Auctions</h3>
+        <p>{{ total_closed }}</p>
+    </div>
+</div>
+
+<section class="auction-section">
+    <h2>My Auctions</h2>
+
+    {% if my_auctions %}
+        <div class="auction-grid">
+            {% for auction in my_auctions %}
+            <div class="auction-card">
+                <h3>{{ auction.title }}</h3>
+                <p>{{ auction.description }}</p>
+
+                <div class="price">
+                    Current Price: ${{ "%.2f"|format(auction.current_price) }}
+                </div>
+
+                <div class="meta">
+                    {% if auction.is_active %}
+                        Status: Live
+                    {% else %}
+                        Status: Closed
+                    {% endif %}
+                </div>
+
+                <a href="/auction/{{ auction.id }}" class="view-btn">Open</a>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="empty-text">You have not created any auctions yet.</p>
+    {% endif %}
+</section>
+
+<section class="auction-section" style="margin-top:40px;">
+    <h2>Auctions I Won</h2>
+
+    {% if won_auctions %}
+        <div class="auction-grid">
+            {% for auction in won_auctions %}
+            <div class="auction-card">
+                <h3>{{ auction.title }}</h3>
+                <p>{{ auction.description }}</p>
+
+                <div class="price">
+                    Winning Price: ${{ "%.2f"|format(auction.current_price) }}
+                </div>
+
+                <div class="meta">Winner: {{ current_user.username }}</div>
+
+                <a href="/auction/{{ auction.id }}" class="view-btn">View</a>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="empty-text">You have not won any auctions yet.</p>
+    {% endif %}
+</section>
+
+{% endblock %}

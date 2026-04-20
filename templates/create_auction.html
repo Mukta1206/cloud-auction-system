@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Create Auction</h1>
+
+<form method="POST" class="form-box">
+
+    <input type="text" name="title" placeholder="Item Title" required>
+
+    <textarea name="description" placeholder="Description"></textarea>
+
+    <select name="category" required>
+        <option value="">Select Category</option>
+        <option>Electronics</option>
+        <option>Fashion</option>
+        <option>Vehicles</option>
+        <option>Art</option>
+        <option>Collectibles</option>
+        <option>Other</option>
+    </select>
+
+    <input type="number" step="0.01" name="starting_price" placeholder="Starting Price" required>
+
+    <button type="submit">Launch Auction</button>
+
+</form>
+{% endblock %}

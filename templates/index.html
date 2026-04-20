@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<section class="hero">
+<h1>Cloud Auction Platform</h1>
+<p>Smart SaaS marketplace with live bidding.</p>
+</section>
+
+<form method="GET" class="form-box">
+
+<input type="text" name="search" placeholder="Search items">
+
+<select name="status">
+    <option value="">All Status</option>
+    <option value="live">Live</option>
+    <option value="closed">Closed</option>
+</select>
+
+<select name="category">
+    <option value="">All Categories</option>
+    <option>Electronics</option>
+    <option>Fashion</option>
+    <option>Vehicles</option>
+    <option>Art</option>
+    <option>Collectibles</option>
+    <option>Other</option>
+</select>
+
+<select name="sort">
+    <option value="">Newest</option>
+    <option value="price">Highest Price</option>
+</select>
+
+<button type="submit">Apply Filters</button>
+
+</form>
+
+<section class="auction-section">
+
+{% if auctions %}
+<div class="auction-grid">
+
+{% for auction in auctions %}
+<div class="auction-card">
+
+<h3>{{ auction.title }}</h3>
+
+<p>{{ auction.description }}</p>
+
+<div class="meta">
+Category: {{ auction.category }}
+</div>
+
+<div class="price">
+${{ "%.2f"|format(auction.current_price) }}
+</div>
+
+{% if auction.is_active %}
+<div class="live-timer"
+data-end="{{ auction.end_time.isoformat() }}">
+Loading...
+</div>
+{% else %}
+<div class="meta">Closed</div>
+{% endif %}
+
+<a href="/auction/{{ auction.id }}" class="view-btn">
+View Auction
+</a>
+
+</div>
+{% endfor %}
+
+</div>
+{% else %}
+<p class="empty-text">No auctions found.</p>
+{% endif %}
+
+</section>
+
+<script>
+function updateTimers() {
+document.querySelectorAll(".live-timer").forEach(timer => {
+
+let endTime = new Date(timer.dataset.end + "Z").getTime();
+let now = new Date().getTime();
+let diff = endTime - now;
+
+if (diff <= 0) {
+timer.innerHTML = "Refreshing result...";
+location.reload();
+return;
+}
+
+let m = Math.floor(diff / 60000);
+let s = Math.floor((diff % 60000) / 1000);
+
+timer.innerHTML = "⏳ " + m + "m " + s + "s";
+});
+}
+
+setInterval(updateTimers,1000);
+updateTimers();
+</script>
+
+{% endblock %}

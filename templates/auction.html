@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>{{ auction.title }}</h1>
+
+<p>{{ auction.description }}</p>
+
+<div class="auction-card">
+
+    <h2>
+        Current Price:
+        ${{ "%.2f"|format(auction.current_price) }}
+    </h2>
+
+    {% if auction.is_active %}
+
+        <p id="timer"></p>
+
+        {% if current_user.is_authenticated %}
+        <form method="POST" class="form-box">
+
+            <input
+                type="number"
+                step="0.01"
+                name="amount"
+                placeholder="Enter Your Bid"
+                required>
+
+            <button type="submit">
+                Place Bid
+            </button>
+
+        </form>
+        {% else %}
+
+        <p>Please login to place bid.</p>
+
+        {% endif %}
+
+    {% else %}
+
+        <h3>Auction Closed</h3>
+
+        {% if auction.winner %}
+            <p>Winner: {{ auction.winner.username }}</p>
+        {% endif %}
+
+    {% endif %}
+
+</div>
+
+<h2 style="margin-top:40px;">Bid History</h2>
+
+{% for bid in bids %}
+
+<div class="auction-card">
+    ${{ "%.2f"|format(bid.amount) }}
+    by
+    {{ bid.bidder.username }}
+</div>
+
+{% endfor %}
+
+{% if auction.is_active %}
+
+<script>
+function startTimer() {
+
+    const timerBox = document.getElementById("timer");
+
+    let endTime =
+        new Date("{{ auction.end_time.strftime('%Y-%m-%dT%H:%M:%S') }}Z").getTime();
+
+    const interval = setInterval(function () {
+
+        const now = new Date().getTime();
+        const distance = endTime - now;
+
+        if (distance <= 0) {
+            clearInterval(interval);
+            timerBox.innerHTML = "Auction Ending...";
+            location.reload();
+            return;
+        }
+
+        const minutes = Math.floor(distance / 60000);
+        const seconds = Math.floor((distance % 60000) / 1000);
+
+        timerBox.innerHTML =
+            "⏳ Time Left: " + minutes + "m " + seconds + "s";
+
+    }, 1000);
+}
+
+startTimer();
+</script>
+
+{% endif %}
+
+{% endblock %}
